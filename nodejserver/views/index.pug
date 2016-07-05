@@ -38,28 +38,13 @@ html(lang='en')
           h2.dashhead-title Overview
         .btn-toolbar.dashhead-toolbar
           button#btnStartPreview.btn.btn-lg.btn-primary-outline(type='button' onclick='startPreview()') Start preview data
-          button#btnStartSaving.btn.btn-lg.btn-primary-outline(type='button' onclick='startSaving()') Start saving data
       .hr-divider.m-t.m-b-md
         h3.hr-divider-content.hr-divider-heading Quick stats
       .row.text-center.m-t-lg
-        .col-sm-6.m-b-md
+        .col-sm.m-b-md
           h3 Sensor 1 Accelerometer
           .w-full.m-x-auto
-            #sensor1Acc(style='height: 300px; width:100%;')
-        .col-sm-6.m-b-md
-          h3 Sensor 1 Gyro
-          .w-full.m-x-auto
-            #sensor1Gyro(style='height: 300px; width:100%;')
-      .row.text-center.m-t-lg
-        .col-sm-6.m-b-md
-          h3 Sensor 2 Accelerometer
-          .w-full.m-x-auto
-            #sensor2Acc(style='height: 300px; width:100%;')
-        .col-sm-6.m-b-md
-          h3 Sensor 2 Gyro
-          .w-full.m-x-auto
-            #sensor2Gyro(style='height: 300px; width:100%;')
-        a#btnDownload.btn.btn-lg.btn-primary-outline(href='/downloadData', role='button') Download data
+            #emgPlot(style='height: 300px; width:100%;')
     // Include jQuery (required) and the JS
     script(src='js/jquery.min.js')
     script(src='js/toolkit.min.js')

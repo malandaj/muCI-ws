@@ -9,6 +9,8 @@
 
 SoftwareSerial swSer(5, 4, false, 256); //rx tx
 
+String inputString = "";         // a string to hold incoming data
+
 WebSocketsClient webSocket;
 // Update these with values suitable for your network.
 //const char* ssid = "BrokenBrains";
@@ -57,9 +59,9 @@ void webSocketEvent(WStype_t type, uint8_t * payload, size_t lenght) {
 }
 
 void setup() {
-  Serial.begin(9600);
-  swSer.begin(9600);
+  Serial.begin(115200);
   Serial.println();
+  swSer.begin(115200);
   //read configuration from FS json
   Serial.println("mounting FS...");
   if(SPIFFS.begin()){
@@ -158,22 +160,14 @@ void setup() {
 }
 
 void loop() {
-  // send one lecture every 10ms (100Hz)
-//  if(swSer.available() > 0){
-//    if(ban){
-//      Serial.println("Enviar datos");
-//      int value = swSer.read();
-//      StaticJsonBuffer<packetSize> jsonBuffer;
-//      JsonObject& root = jsonBuffer.createObject();
-//      String JSON;
-//      root["value"] = value;
-//      root["cont"] = cont;
-//      ++cont;
-//      root.printTo(JSON);
-//      webSocket.sendTXT(JSON);
-//    }
-//  }
-  if (swSer.available() > 0) {
-    Serial.println(swSer.read());
+  while (swSer.available() > 0) {
+    char inChar = (char)swSer.read();
+    if (inChar == '\n') {
+      webSocket.sendTXT(inputString);
+      //Serial.print(inputString);
+      inputString = "";
+    }else{
+      inputString += inChar;
+    }
   }
 }

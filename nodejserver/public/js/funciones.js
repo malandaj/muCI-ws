@@ -20,10 +20,7 @@ var banPreview = false;
 var banSave = false;
 
 window.onload = function () {
-	document.getElementById("btnStartSaving").disabled = true;
-	$('#btnDownload').attr('disabled', true);
-	$('#btnDownload').bind('click', false);
-	chart = new CanvasJS.Chart("sensor1Acc",{
+	chart = new CanvasJS.Chart("emgPlot",{
 		backgroundColor: "transparent",
 		axisY:{
 			gridColor: "rgba(255,255,255,.05)",
@@ -62,7 +59,6 @@ window.onload = function () {
 			}
 		}
 	});
-
 	setupWs();
 }
 
@@ -94,24 +90,8 @@ function startPreview(){
 	banPreview = !banPreview;
 	if (banPreview){
 		$("#btnStartPreview").html('Stop data');
-		document.getElementById("btnStartSaving").disabled = false;
 	}else{
 		$("#btnStartPreview").html('Start data');
-		document.getElementById("btnStartSaving").disabled = true;
 	}
 	ws.send("startPreview");
-}
-
-function startSaving(){
-	banSave = !banSave;
-	if(banSave){
-		$("#btnStartSaving").html('Stop saving data');
-		ws.send("startSaving");
-	}else{
-		$("#btnStartSaving").html('Start saving data');
-		ws.send("stopSaving");
-		NProgress.start();
-		$("#btnStartPreview").html('Start data');
-		ws.send("startPreview");
-	}
 }
