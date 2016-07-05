@@ -12,14 +12,6 @@ SoftwareSerial swSer(5, 4, false, 256); //rx tx
 String inputString = "";         // a string to hold incoming data
 
 WebSocketsClient webSocket;
-// Update these with values suitable for your network.
-//const char* ssid = "BrokenBrains";
-//const char* password = "1234567278";
-//const char* ws = "192.168.2.116"; // ip addres of nodejs server
-
-//const char* ssid = "hackmeifucan";
-//const char* password = "Bpy()[wmmt]w#j$Q}X8S58$yH^:Hx5t)cTmSAad~SR*9z";
-//const char* ws = "192.168.0.2"; // ip addres of nodejs server
 
 unsigned long lastMsg = 0;
 int cont = 0;
@@ -27,7 +19,7 @@ const long interval = 10;
 
 bool ban = false;
 
-#define packetSize (20)
+#define packetSize (50)
 
 //define your default values here, if there are different values in config.json, they are overwritten.
 char ws_server[40];
@@ -163,8 +155,14 @@ void loop() {
   while (swSer.available() > 0) {
     char inChar = (char)swSer.read();
     if (inChar == '\n') {
-      webSocket.sendTXT(inputString);
-      //Serial.print(inputString);
+      StaticJsonBuffer<packetSize> jsonBuffer;
+      JsonObject& root = jsonBuffer.createObject();
+      String JSON;
+      root["value"] = inputString;
+      root["cont"] = cont;
+      cont++;
+      root.printTo(JSON);
+      webSocket.sendTXT(JSON);
       inputString = "";
     }else{
       inputString += inChar;
