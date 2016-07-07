@@ -35,21 +35,12 @@ wss.on('connection', function connection(ws) {
     //var obj = JSON.parse(message);
     //console.log(parseInt(obj.value));
 
-    if(message == "startPreview"){
-      sensors.forEach(function(sensor) {
-        sensor.send('1', function ack(error){
-          // if error is not defined, the send has been completed,
-          // otherwise the error object will indicate what failed.
-        });
+    clients.forEach(function(client) {
+      client.send(message, function ack(error){
+        // if error is not defined, the send has been completed,
+        // otherwise the error object will indicate what failed.
       });
-    }else{
-      clients.forEach(function(client) {
-        client.send(message, function ack(error){
-          // if error is not defined, the send has been completed,
-          // otherwise the error object will indicate what failed.
-        });
-      });
-    }
+    });
   });
 
   ws.on('close', function() {
