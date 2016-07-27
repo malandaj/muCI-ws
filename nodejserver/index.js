@@ -6,6 +6,23 @@ var server = require('http').createServer()
   , app = express()
   , port = 8080;
 
+var SerialPort = require("serialport");
+var sPort = new SerialPort("/dev/ttyACM0", {
+  baudRate: 9600,
+  dataBits: 8,
+  parity: 'none',
+  stopBits: 1,
+  flowControl: false,
+  parser: SerialPort.parsers.readline('\r\n')
+});
+
+sPort.on('open', function() {
+  console.log('Port open');
+  sPort.on('data', function(data) {
+    console.log('data received: ' + data);
+  });
+});
+
 var path = require('path');
 var saving = false;
 
@@ -31,7 +48,18 @@ wss.on('connection', function connection(ws) {
   }
 
   ws.on('message', function incoming(message) {
-    console.log(message);
+    var lecture = JSON.parse(message);
+    //console.log(lecture);
+    //console.log(parseInt(lecture.value));
+    var leds = map(parseInt(lecture.value),0,750,0,73);
+    //console.log(leds);
+    sPort.write(leds+'\r\n');
+    // sPort.write("50", function(err, results) {
+    //   if(err){
+    //     console.log('err ' + err);
+    //   }
+    //     console.log('results ' + results);
+    // });
     //var obj = JSON.parse(message);
     //console.log(parseInt(obj.value));
 
@@ -51,6 +79,13 @@ wss.on('connection', function connection(ws) {
     }
   });
 });
+
+function map(x,in_min,in_max,out_min,out_max){
+    if(x > in_max){
+      x = in_max
+    }
+    return Math.round((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min);
+}
 
 server.on('request', app);
 server.listen(port, function () { console.log('Listening on ' + server.address().port) });
